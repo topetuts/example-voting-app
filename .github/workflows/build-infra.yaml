@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - 'main'
+    paths:
+      - 'infra/**'
+      - 'k8s-specifications/**'
 
 jobs:
   infrabuild:
@@ -43,8 +46,8 @@ jobs:
       - name: Authenticate Kubectl
         run: aws eks update-kubeconfig --region eu-central-1 --name dev-eks
 
-      - name: Test Credentials
-        run: kubectl get svc
+      # - name: Apply Kubernetes Manifests
+      #   run: kubectl create -f k8s-specifications/
 
 
     

@@ -1,65 +1,22 @@
-# Example Voting App
+# Option
+Option 1
 
-A simple distributed application running across multiple Docker containers.
+# Workflow Diagram
+![Architecture diagram](examplevote.drawio.png)
 
-## Getting started
+# Approach
+1. Forked the sample repository.
+2. Since the preferred technology stack is AWS, I have decide to use the EKS service of AWS. 
+3. To create the AWS resources such as VPC, EKS and EKS Node I have used Terraform as IaC tooling. [Here is the Terraform Code](./infra/)
+4. To automate the deployment, I have created [Here is the workflow code.](./.github/workflows/build-infra.yaml).
+5. The workflow will apply the terraform code and then apply the kubernetes manifest.
 
-Download [Docker Desktop](https://www.docker.com/products/docker-desktop) for Mac or Windows. [Docker Compose](https://docs.docker.com/compose) will be automatically installed. On Linux, make sure you have the latest version of [Compose](https://docs.docker.com/compose/install/).
+# Justification
+Since there are already prepared K8s manifest files, I have decided to use Kubernetes as the platform of the sample application. Opting for EKS as the service provider streamlines cluster management, reducing the need for extensive administration. Furthermore, the implementation of Terraform for infrastructure as code (IaC) facilitates the replication of the Kubernetes Cluster across various environments with ease.
 
-This solution uses Python, Node.js, .NET, with Redis for messaging and Postgres for storage.
 
-Run in this directory to build and run the app:
-
-```shell
-docker compose up
-```
-
-The `vote` app will be running at [http://localhost:5000](http://localhost:5000), and the `results` will be at [http://localhost:5001](http://localhost:5001).
-
-Alternately, if you want to run it on a [Docker Swarm](https://docs.docker.com/engine/swarm/), first make sure you have a swarm. If you don't, run:
-
-```shell
-docker swarm init
-```
-
-Once you have your swarm, in this directory run:
-
-```shell
-docker stack deploy --compose-file docker-stack.yml vote
-```
-
-## Run the app in Kubernetes
-
-The folder k8s-specifications contains the YAML specifications of the Voting App's services.
-
-Run the following command to create the deployments and services. Note it will create these resources in your current namespace (`default` if you haven't changed it.)
-
-```shell
-kubectl create -f k8s-specifications/
-```
-
-The `vote` web app is then available on port 31000 on each host of the cluster, the `result` web app is available on port 31001.
-
-To remove them, run:
-
-```shell
-kubectl delete -f k8s-specifications/
-```
-
-## Architecture
-
-![Architecture diagram](architecture.excalidraw.png)
-
-* A front-end web app in [Python](/vote) which lets you vote between two options
-* A [Redis](https://hub.docker.com/_/redis/) which collects new votes
-* A [.NET](/worker/) worker which consumes votes and stores them in…
-* A [Postgres](https://hub.docker.com/_/postgres/) database backed by a Docker volume
-* A [Node.js](/result) web app which shows the results of the voting in real time
-
-## Notes
-
-The voting application only accepts one vote per client browser. It does not register additional votes if a vote has already been submitted from a client.
-
-This isn't an example of a properly architected perfectly designed distributed app... it's just a simple
-example of the various types of pieces and languages you might see (queues, persistent data, etc), and how to
-deal with them in Docker at a basic level.
+#Notes
+1. I have commented out the EKS Node Pool code because my AWS account block the deployment of EC2. Sorry for that.
+2. Since there is no node pool, I have commented out the Kubernetes Manifest deployment step on the Build Infra workflow. 
+3. To make sure that the Github Runner has access to the created EKS environment, I have tested kubectl get service command from the worklow.
+![Get Service](getservice.png)
