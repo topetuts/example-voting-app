@@ -27,5 +27,6 @@ jobs:
 
       - name: Terraform init
         id: init
+        working-directory: ./infra
         run: terraform init
     
