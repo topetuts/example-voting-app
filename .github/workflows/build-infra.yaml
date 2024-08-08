@@ -33,5 +33,5 @@ jobs:
       - name: Terraform plan
         id: plan
         working-directory: ./infra
-        run: terraform plan -var=${{ secrets.AWS_CLUSTER_ROLE }}
+        run: terraform plan -var="role_name=${{ secrets.AWS_CLUSTER_ROLE }}"
     
