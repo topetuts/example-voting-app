@@ -34,4 +34,17 @@ jobs:
         id: plan
         working-directory: ./infra
         run: terraform plan -var="role_name=${{ secrets.AWS_CLUSTER_ROLE }}"
+
+      - name: Terraform apply
+        id: apply
+        working-directory: ./infra
+        run: terraform apply -var="role_name=${{ secrets.AWS_CLUSTER_ROLE }}" -auto-approve
+
+      - name: Authenticate Kubectl
+        run: aws eks update-kubeconfig --region eu-central-1 --name dev-eks
+
+      - name: Test Credentials
+        run: kubectl get svc
+
+
     
